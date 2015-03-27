@@ -6,8 +6,13 @@
 
 tmpDirectory='/tmp'     # Temp directory, must be writeable by user running script
 
-echo -n "Please enter your GitHub username, followed by [ENTER]:  "
-read github_username
+if [ $# -eq 0 ]; then
+    echo -n "Please enter your GitHub username, followed by [ENTER]:  "
+    read github_username
+else
+    github_username=$1
+fi
+
 
 mkdir github-repo-backup
 cd github-repo-backup
