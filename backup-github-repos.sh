@@ -19,10 +19,18 @@ git commit -a -m "git-repo-backup repository created.  Ready to start the backup
 
 git rm README.md
 git commit -a -m "Emptied repo so no conflicts will arise during backup process"
-
 echo "git-repo-backup repository created.  Ready to start the backup process."
+
 echo "Downloading jq which will is used to parse JSON from the GitHub API"
-curl -L http://stedolan.github.io/jq/download/osx32/jq > $tmpDirectory"/jq"
+### Find out what OS we are running on so we can launch the browser properly
+platform='unknown'
+unamestr=`uname`
+if [[ "$unamestr" == 'Darwin' ]]; then
+  platform='osx32'
+else
+  platform='linux32'
+fi
+curl -L http://stedolan.github.io/jq/download/$platform/jq > $tmpDirectory"/jq"
 chmod +x $tmpDirectory"/jq"
 
 repoNames=`curl -sL https://api.github.com/users/$github_username/repos | $tmpDirectory/jq ".[].name" | sed 's/"//g'`
