@@ -4,6 +4,8 @@
 # github.com/bryankaraffa
 #
 
+tmpDirectory='/tmp'     # Temp directory, must be writeable by user running script
+
 echo -n "Please enter your GitHub username, followed by [ENTER]:  "
 read github_username
 
@@ -20,18 +22,18 @@ git commit -a -m "Emptied repo so no conflicts will arise during backup process"
 
 echo "git-repo-backup repository created.  Ready to start the backup process."
 echo "Downloading jq which will is used to parse JSON from the GitHub API"
-curl -L http://stedolan.github.io/jq/download/osx32/jq > jq
-chmod +x jq
+curl -L http://stedolan.github.io/jq/download/osx32/jq > $tmpDirectory"/jq"
+chmod +x $tmpDirectory"/jq"
 
-curl -sL https://api.github.com/users/$github_username/repos | ./jq ".[].name" | sed 's/"//g' >> .github-backup.repoNames
+repoNames=`curl -sL https://api.github.com/users/$github_username/repos | $tmpDirectory/jq ".[].name" | sed 's/"//g'`
 while read r; do
   git checkout -b $r
   git remote add -f $r "https://github.com/$github_username/$r.git"
   git merge "$r/master"
   git commit -a -m "Repo backed up from master branch"
   git checkout master
-done < .github-backup.repoNames
-rm .github-backup.repoNames jq
+done <<< "$repoNames"
+rm $tmpDirectory"/jq"
 
 touch README.md
 echo "This repository contains backups of github user: $github_username's git repositories.  Each backed up repository is saved in it's own branch.  Git Repo Backup Script Developed by: [Bryan Karaffa](https://github.com/bryankaraffa)" >> README.md
