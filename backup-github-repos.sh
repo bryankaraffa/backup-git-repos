@@ -21,7 +21,7 @@ git rm README.md
 git commit -a -m "Emptied repo so no conflicts will arise during backup process"
 echo "git-repo-backup repository created.  Ready to start the backup process."
 
-echo "Downloading jq which will is used to parse JSON from the GitHub API"
+
 ### Find out what OS we are running on so we can launch the browser properly
 platform='unknown'
 unamestr=`uname`
@@ -30,6 +30,7 @@ if [[ "$unamestr" == 'Darwin' ]]; then
 else
   platform='linux32'
 fi
+echo "Downloading jq (platform: $platform) which will is used to parse JSON from the GitHub API"
 curl -L http://stedolan.github.io/jq/download/$platform/jq > $tmpDirectory"/jq"
 chmod +x $tmpDirectory"/jq"
 
@@ -42,6 +43,7 @@ while read r; do
   git checkout master
 done <<< "$repoNames"
 rm $tmpDirectory"/jq"
+
 
 touch README.md
 echo "This repository contains backups of github user: $github_username's git repositories.  Each backed up repository is saved in it's own branch.  Git Repo Backup Script Developed by: [Bryan Karaffa](https://github.com/bryankaraffa)" >> README.md
