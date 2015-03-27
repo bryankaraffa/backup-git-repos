@@ -4,7 +4,8 @@
 # github.com/bryankaraffa
 #
 
-$github_username=${github_username:='bryankaraffa'}
+echo -n "Please enter your GitHub username, followed by [ENTER]:  "
+read github_username
 
 mkdir github-repo-backup
 cd github-repo-backup
@@ -12,10 +13,10 @@ git init .
 
 touch README.md
 git add README.md
-git commit -a -m "Initial commit"
+git commit -a -m "git-repo-backup repository created.  Ready to start the backup process."
 
 git rm README.md
-git commit -a -m "Clean repo so no conflicts will arise during backup"
+git commit -a -m "Emptied repo so no conflicts will arise during backup process"
 
 echo "git-repo-backup repository created.  Ready to start the backup process."
 echo "Downloading jq which will is used to parse JSON from the GitHub API"
@@ -33,7 +34,7 @@ done < .github-backup.repoNames
 rm .github-backup.repoNames jq
 
 touch README.md
-echo "This repository contains backups of a user's git repositories.  Each repository is saved in it's own branch.  Git Repo Backup Script Developed by: [Bryan Karaffa](https://github.com/bryankaraffa)" >> README.md
+echo "This repository contains backups of github user: $github_username's git repositories.  Each backed up repository is saved in it's own branch.  Git Repo Backup Script Developed by: [Bryan Karaffa](https://github.com/bryankaraffa)" >> README.md
 git add README.md
 
-git commit -a -m "Repository backed up"
+git commit -a -m "Repository backup complete."
